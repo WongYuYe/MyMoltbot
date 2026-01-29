@@ -1,157 +1,195 @@
 <template>
   <div class="container">
     <div class="header">
-      <h1>MyMoltbot - Todo List</h1>
+      <h1>MyMoltbot</h1>
+      <p class="subtitle">让你的生活井井有条</p>
     </div>
     
-    <!-- 添加待办事项区域 -->
-    <div class="add-todo-section">
+    <!-- 添加待办事项卡片 -->
+    <div class="card add-todo-card">
+      <h2>添加新任务</h2>
       <div class="input-group">
         <input 
           v-model="newTodo.content" 
-          class="add-input" 
-          placeholder="添加新的待办事项..." 
+          class="input-field" 
+          placeholder="输入任务内容..."
           @keyup.enter="addTodo"
         />
       </div>
       
-      <div class="input-group">
-        <label>截止日期:</label>
-        <input 
-          v-model="newTodo.dueDate" 
-          type="date" 
-          class="date-input"
-        />
+      <div class="form-row">
+        <div class="form-col">
+          <label>截止日期</label>
+          <input 
+            v-model="newTodo.dueDate" 
+            type="date" 
+            class="input-field date-input"
+          />
+        </div>
+        
+        <div class="form-col">
+          <label>优先级</label>
+          <select v-model="newTodo.priority" class="input-field select-input">
+            <option value="low">低</option>
+            <option value="medium" selected>中</option>
+            <option value="high">高</option>
+          </select>
+        </div>
       </div>
       
-      <div class="input-group">
-        <label>优先级:</label>
-        <select v-model="newTodo.priority" class="priority-select">
-          <option value="low">低</option>
-          <option value="medium" selected>中</option>
-          <option value="high">高</option>
-        </select>
+      <div class="form-row">
+        <div class="form-col">
+          <label>分类</label>
+          <select v-model="newTodo.category" class="input-field select-input">
+            <option value="personal" selected>个人</option>
+            <option value="work">工作</option>
+            <option value="shopping">购物</option>
+            <option value="health">健康</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        
+        <div class="form-col">
+          <label>提醒时间</label>
+          <input 
+            v-model="newTodo.reminderTime" 
+            type="datetime-local" 
+            class="input-field datetime-input"
+          />
+        </div>
       </div>
       
-      <div class="input-group">
-        <label>分类:</label>
-        <select v-model="newTodo.category" class="category-select">
-          <option value="personal" selected>个人</option>
-          <option value="work">工作</option>
-          <option value="shopping">购物</option>
-          <option value="health">健康</option>
-          <option value="other">其他</option>
-        </select>
-      </div>
-      
-      <div class="input-group">
-        <label>提醒时间:</label>
-        <input 
-          v-model="newTodo.reminderTime" 
-          type="datetime-local" 
-          class="reminder-input"
-        />
-      </div>
-      
-      <button class="add-btn btn btn-primary" @click="addTodo">添加</button>
+      <button class="btn btn-primary btn-large" @click="addTodo">
+        <span class="btn-icon">➕</span> 添加任务
+      </button>
     </div>
 
-    <!-- 待办事项统计 -->
-    <div class="todo-stats">
-      <span class="stat-text">总共: {{ todos.length }} | 待完成: {{ pendingCount }} | 已完成: {{ completedCount }}</span>
-    </div>
-
-    <!-- 待办事项筛选器 -->
-    <div class="filter-section">
-      <div class="filter-group">
-        <label>按优先级筛选:</label>
-        <select v-model="filterPriority" @change="applyFilters" class="filter-select">
-          <option value="">全部</option>
-          <option value="high">高</option>
-          <option value="medium">中</option>
-          <option value="low">低</option>
-        </select>
+    <!-- 统计卡片 -->
+    <div class="card stats-card">
+      <div class="stat-item">
+        <div class="stat-number">{{ todos.length }}</div>
+        <div class="stat-label">总任务</div>
       </div>
-      
-      <div class="filter-group">
-        <label>按分类筛选:</label>
-        <select v-model="filterCategory" @change="applyFilters" class="filter-select">
-          <option value="">全部</option>
-          <option value="personal">个人</option>
-          <option value="work">工作</option>
-          <option value="shopping">购物</option>
-          <option value="health">健康</option>
-          <option value="other">其他</option>
-        </select>
+      <div class="stat-item">
+        <div class="stat-number">{{ pendingCount }}</div>
+        <div class="stat-label">待完成</div>
       </div>
-      
-      <div class="filter-group">
-        <label>按状态筛选:</label>
-        <select v-model="filterStatus" @change="applyFilters" class="filter-select">
-          <option value="">全部</option>
-          <option value="pending">待完成</option>
-          <option value="completed">已完成</option>
-        </select>
+      <div class="stat-item">
+        <div class="stat-number">{{ completedCount }}</div>
+        <div class="stat-label">已完成</div>
       </div>
     </div>
 
-    <!-- 待办事项列表 -->
-    <div class="todo-list">
+    <!-- 筛选器 -->
+    <div class="card filter-card">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label>优先级</label>
+          <select v-model="filterPriority" @change="applyFilters" class="input-field select-input">
+            <option value="">全部优先级</option>
+            <option value="high">高</option>
+            <option value="medium">中</option>
+            <option value="low">低</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>分类</label>
+          <select v-model="filterCategory" @change="applyFilters" class="input-field select-input">
+            <option value="">全部分类</option>
+            <option value="personal">个人</option>
+            <option value="work">工作</option>
+            <option value="shopping">购物</option>
+            <option value="health">健康</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>状态</label>
+          <select v-model="filterStatus" @change="applyFilters" class="input-field select-input">
+            <option value="">全部状态</option>
+            <option value="pending">待完成</option>
+            <option value="completed">已完成</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 任务列表 -->
+    <div class="tasks-container">
       <div 
         v-for="todo in filteredTodos" 
         :key="todo.id" 
-        class="todo-item"
+        class="task-card"
         :class="{ completed: todo.completed, 'priority-high': todo.priority === 'high', 'priority-medium': todo.priority === 'medium', 'priority-low': todo.priority === 'low' }"
       >
-        <div class="todo-header">
-          <label class="todo-label">
+        <div class="task-header">
+          <div class="task-checkbox">
             <input 
               type="checkbox" 
               :checked="todo.completed" 
               @change="toggleTodo(todo.id)"
+              :id="`checkbox-${todo.id}`"
             />
-            <span class="todo-text">{{ todo.content }}</span>
-          </label>
-          
-          <div class="todo-meta">
-            <span v-if="todo.dueDate" class="due-date" :class="{ 'overdue': isOverdue(todo.dueDate) && !todo.completed }">
-              📅 {{ formatDate(todo.dueDate) }}
-            </span>
-            <span class="priority-badge" :class="'priority-' + todo.priority">
-              {{ getPriorityText(todo.priority) }}
-            </span>
-            <span class="category-badge" :class="'category-' + todo.category">
-              {{ getCategoryText(todo.category) }}
-            </span>
+            <label :for="`checkbox-${todo.id}`" class="checkbox-label"></label>
           </div>
-        </div>
-        
-        <div class="todo-details">
-          <span v-if="todo.reminderTime" class="reminder-time">
-            🔔 提醒: {{ formatDateTime(todo.reminderTime) }}
-          </span>
-        </div>
-        
-        <div class="todo-actions">
-          <button class="btn btn-danger" @click="deleteTodo(todo.id)">删除</button>
+          
+          <div class="task-content">
+            <h3 :class="{ strikethrough: todo.completed }">{{ todo.content }}</h3>
+            
+            <div class="task-meta">
+              <div v-if="todo.dueDate" class="meta-item" :class="{ 'overdue': isOverdue(todo.dueDate) && !todo.completed }">
+                <span class="meta-icon">📅</span>
+                <span>{{ formatDate(todo.dueDate) }}</span>
+                <span v-if="isOverdue(todo.dueDate) && !todo.completed" class="overdue-text">(已逾期)</span>
+              </div>
+              
+              <div class="meta-item">
+                <span class="meta-icon">⚡</span>
+                <span class="priority-badge" :class="'priority-' + todo.priority">
+                  {{ getPriorityText(todo.priority) }}
+                </span>
+              </div>
+              
+              <div class="meta-item">
+                <span class="meta-icon">🏷️</span>
+                <span class="category-badge" :class="'category-' + todo.category">
+                  {{ getCategoryText(todo.category) }}
+                </span>
+              </div>
+              
+              <div v-if="todo.reminderTime" class="meta-item">
+                <span class="meta-icon">🔔</span>
+                <span>{{ formatDateTime(todo.reminderTime) }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="task-actions">
+            <button class="btn btn-danger" @click="deleteTodo(todo.id)">
+              <span class="btn-icon">🗑️</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 空状态提示 -->
-    <div v-if="filteredTodos.length === 0" class="empty-tips">
-      <span>{{ todos.length === 0 ? '暂无待办事项，快添加一个吧！' : '没有符合条件的待办事项' }}</span>
+    <!-- 空状态 -->
+    <div v-if="filteredTodos.length === 0" class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>{{ todos.length === 0 ? '还没有任务' : '没有符合条件的任务' }}</h3>
+      <p>{{ todos.length === 0 ? '添加一个新任务开始吧！' : '尝试更改筛选条件' }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 export default {
   name: 'App',
   setup() {
-    // 响应式数据
     const newTodo = ref({
       content: '',
       dueDate: '',
@@ -165,7 +203,6 @@ export default {
     const filterCategory = ref('')
     const filterStatus = ref('')
 
-    // 计算属性
     const pendingCount = computed(() => {
       return todos.value.filter(todo => !todo.completed).length
     })
@@ -191,11 +228,9 @@ export default {
         result = result.filter(todo => todo.completed)
       }
       
-      // 按创建时间倒序排列
       return result.sort((a, b) => b.createTime - a.createTime)
     })
 
-    // 从本地存储加载数据
     const loadTodos = () => {
       const storedTodos = localStorage.getItem('todos')
       if (storedTodos) {
@@ -203,15 +238,13 @@ export default {
       }
     }
 
-    // 保存数据到本地存储
     const saveTodos = () => {
       localStorage.setItem('todos', JSON.stringify(todos.value))
     }
 
-    // 添加待办事项
     const addTodo = () => {
       if (!newTodo.value.content.trim()) {
-        alert('请输入待办事项')
+        alert('请输入任务内容')
         return
       }
 
@@ -227,7 +260,6 @@ export default {
       }
 
       todos.value.push(newTodoItem)
-      // 重置表单
       newTodo.value = {
         content: '',
         dueDate: '',
@@ -238,7 +270,6 @@ export default {
       saveTodos()
     }
 
-    // 切换待办事项完成状态
     const toggleTodo = (id) => {
       const todo = todos.value.find(item => item.id === id)
       if (todo) {
@@ -247,7 +278,6 @@ export default {
       }
     }
 
-    // 删除待办事项
     const deleteTodo = (id) => {
       const index = todos.value.findIndex(item => item.id === id)
       if (index !== -1) {
@@ -256,7 +286,6 @@ export default {
       }
     }
 
-    // 检查是否逾期
     const isOverdue = (dueDate) => {
       if (!dueDate) return false
       const today = new Date()
@@ -266,21 +295,18 @@ export default {
       return due < today
     }
 
-    // 格式化日期
     const formatDate = (dateString) => {
       if (!dateString) return ''
       const options = { year: 'numeric', month: 'short', day: 'numeric' }
       return new Date(dateString).toLocaleDateString('zh-CN', options)
     }
 
-    // 格式化日期时间
     const formatDateTime = (dateTimeString) => {
       if (!dateTimeString) return ''
       const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
       return new Date(dateTimeString).toLocaleDateString('zh-CN', options)
     }
 
-    // 获取优先级文本
     const getPriorityText = (priority) => {
       switch(priority) {
         case 'high': return '高优先级'
@@ -290,7 +316,6 @@ export default {
       }
     }
 
-    // 获取分类文本
     const getCategoryText = (category) => {
       switch(category) {
         case 'personal': return '个人'
@@ -302,12 +327,10 @@ export default {
       }
     }
 
-    // 应用筛选器
     const applyFilters = () => {
-      // 由于使用了computed，筛选会自动应用
+      // 筛选器改变时自动更新
     }
 
-    // 组件挂载时加载数据
     onMounted(() => {
       loadTodos()
     })
@@ -336,7 +359,31 @@ export default {
 </script>
 
 <style>
-/* 全局样式 */
+/* 现代化CSS样式 */
+:root {
+  --primary-color: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --secondary-color: #f9fafb;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -344,17 +391,18 @@ export default {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f5f5f5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
   padding: 20px;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f5f5f5;
-  min-height: 100vh;
 }
 
 .header {
@@ -363,269 +411,350 @@ body {
 }
 
 .header h1 {
-  color: #333;
   font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 8px;
 }
 
-/* 添加待办事项区域 */
-.add-todo-section {
-  display: grid;
-  grid-template-columns: 1fr 120px;
-  grid-gap: 15px;
-  margin-bottom: 30px;
+.subtitle {
+  color: var(--gray-600);
+  font-size: 1.1rem;
+}
+
+.card {
   background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: var(--transition);
 }
 
-.input-group {
-  display: flex;
-  flex-direction: column;
+.card:hover {
+  box-shadow: var(--card-shadow-hover);
 }
 
-.input-group label {
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: #555;
-}
-
-.add-input {
-  height: 50px;
-  line-height: 50px;
-  padding: 0 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-}
-
-.add-input:focus {
-  border-color: #007aff;
-}
-
-.date-input, .priority-select, .category-select, .reminder-input {
-  height: 40px;
-  padding: 0 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-}
-
-.add-btn {
-  height: 50px;
-  line-height: 50px;
-  padding: 0 20px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-  align-self: flex-end;
-}
-
-/* 筛选器部分 */
-.filter-section {
-  display: flex;
-  gap: 15px;
+.add-todo-card h2 {
   margin-bottom: 20px;
+  color: var(--gray-800);
+  font-weight: 600;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.form-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-col label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--gray-700);
+  font-size: 0.9rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: var(--transition);
+  background: var(--gray-50);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
   background: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.select-input, .date-input, .datetime-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  outline: none;
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.btn-large {
+  padding: 14px 24px;
+  font-size: 1.1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+}
+
+.btn-danger {
+  background: var(--danger-color);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+.btn-icon {
+  margin-right: 8px;
+}
+
+.stats-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+  color: white;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 16px;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.filter-card {
+  padding: 16px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 .filter-group {
-  display: flex;
-  flex-direction: column;
-  min-width: 120px;
+  flex: 1;
+  min-width: 150px;
 }
 
 .filter-group label {
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: #555;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--gray-700);
+  font-size: 0.9rem;
 }
 
-.filter-select {
-  height: 35px;
-  padding: 0 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
+.tasks-container {
+  display: grid;
+  gap: 16px;
 }
 
-/* 通用按钮样式 */
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  text-align: center;
-  cursor: pointer;
-  border: none;
-}
-
-.btn-primary {
-  background-color: #007aff;
-  color: white;
-}
-
-.btn-danger {
-  background-color: #ff3b30;
-  color: white;
-}
-
-.btn-success {
-  background-color: #4cd964;
-  color: white;
-}
-
-/* 待办事项统计 */
-.todo-stats {
+.task-card {
   background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  text-align: center;
-}
-
-.stat-text {
-  font-size: 16px;
-  color: #666;
-}
-
-/* 待办事项列表 */
-.todo-list {
-  background: white;
-  border-radius: 12px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: var(--transition);
 }
 
-.todo-item {
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.task-card.completed {
+  background: var(--gray-50);
+  opacity: 0.9;
+}
+
+.task-header {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   padding: 20px;
-  border-bottom: 1px solid #eee;
+  gap: 16px;
 }
 
-.todo-item:last-child {
-  border-bottom: none;
+.task-checkbox {
+  position: relative;
+  margin-top: 4px;
 }
 
-.todo-item.completed {
-  background-color: #f9f9f9;
+.task-checkbox input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
 }
 
-.todo-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.todo-label {
-  flex: 1;
-  display: flex;
-  align-items: flex-start;
-  margin-right: 15px;
-}
-
-.todo-label input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  margin-right: 15px;
-  margin-top: 5px;
+.checkbox-label {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--gray-300);
+  border-radius: 6px;
+  position: relative;
   cursor: pointer;
+  transition: var(--transition);
 }
 
-.todo-text {
-  font-size: 18px;
+.checkbox-label::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.task-checkbox input[type="checkbox"]:checked + .checkbox-label {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.task-checkbox input[type="checkbox"]:checked + .checkbox-label::after {
+  opacity: 1;
+}
+
+.task-content {
   flex: 1;
-  word-break: break-word;
 }
 
-.todo-item.completed .todo-text {
+.task-content h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.strikethrough {
   text-decoration: line-through;
-  color: #999;
+  color: var(--gray-500) !important;
 }
 
-.todo-meta {
+.task-meta {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
-  align-self: flex-start;
-  margin-top: 5px;
+  gap: 16px;
 }
 
-.due-date {
-  background-color: #e3f2fd;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #1976d2;
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--gray-600);
 }
 
-.due-date.overdue {
-  background-color: #ffebee;
-  color: #d32f2f;
+.meta-icon {
+  font-size: 0.9rem;
 }
 
-.priority-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: white;
+.priority-badge, .category-badge {
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .priority-high {
-  background-color: #f44336;
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
 }
 
 .priority-medium {
-  background-color: #ff9800;
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
 }
 
 .priority-low {
-  background-color: #4caf50;
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
 }
 
-.category-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: white;
-  background-color: #9e9e9e;
+.category-personal { background: rgba(99, 102, 241, 0.15); color: var(--primary-dark); }
+.category-work { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; }
+.category-shopping { background: rgba(139, 92, 246, 0.15); color: #7c3aed; }
+.category-health { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+.category-other { background: rgba(107, 114, 128, 0.15); color: var(--gray-600); }
+
+.overdue-text {
+  color: var(--danger-color);
+  font-weight: 600;
 }
 
-.todo-details {
-  margin-bottom: 10px;
-  padding-left: 25px;
-}
-
-.reminder-time {
-  background-color: #fff3e0;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #e65100;
-}
-
-.todo-actions {
+.task-actions {
   display: flex;
-  justify-content: flex-end;
+  gap: 8px;
 }
 
-.empty-tips {
+.empty-state {
   text-align: center;
-  padding: 100px 0;
-  color: #999;
-  font-size: 18px;
+  padding: 60px 20px;
+  color: var(--gray-500);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  color: var(--gray-700);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 1rem;
 }
 
 /* 响应式设计 */
@@ -634,80 +763,97 @@ body {
     padding: 10px;
   }
   
-  .add-todo-section {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  
-  .filter-section {
-    flex-direction: column;
-  }
-  
   .header h1 {
     font-size: 2rem;
   }
   
-  .todo-text {
-    font-size: 16px;
-  }
-  
-  .todo-header {
+  .form-row {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
   
-  .todo-meta {
-    margin-top: 10px;
+  .form-col {
+    min-width: auto;
+  }
+  
+  .filter-row {
+    flex-direction: column;
+  }
+  
+  .filter-group {
+    min-width: auto;
+  }
+  
+  .task-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .task-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .stats-card {
+    grid-template-columns: 1fr;
   }
 }
 
-/* 深色模式支持 */
+/* 深色模式 */
 @media (prefers-color-scheme: dark) {
+  :root {
+    --secondary-color: #111827;
+    --gray-50: #111827;
+    --gray-100: #1f2937;
+    --gray-200: #374151;
+    --gray-300: #4b5563;
+    --gray-400: #6b7280;
+    --gray-500: #9ca3af;
+    --gray-600: #d1d5db;
+    --gray-700: #e5e7eb;
+    --gray-800: #f3f4f6;
+    --gray-900: #f9fafb;
+  }
+  
   body {
-    background-color: #1a1a1a;
-    color: #fff;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: var(--gray-200);
   }
   
-  .container {
-    background-color: #1a1a1a;
+  .card {
+    background: var(--gray-800);
+    color: var(--gray-200);
   }
   
-  .add-todo-section,
-  .todo-stats,
-  .todo-list,
-  .filter-section {
-    background: #2a2a2a;
-    color: #fff;
+  .input-field {
+    background: var(--gray-700);
+    border-color: var(--gray-600);
+    color: var(--gray-100);
   }
   
-  .todo-item {
-    border-bottom-color: #444;
+  .input-field:focus {
+    background: var(--gray-600);
   }
   
-  .todo-item.completed {
-    background-color: #333;
+  .task-card {
+    background: var(--gray-800);
+    color: var(--gray-200);
   }
   
-  .add-input,
-  .date-input,
-  .priority-select,
-  .category-select,
-  .reminder-input,
-  .filter-select {
-    background: #333;
-    border-color: #555;
-    color: #fff;
+  .task-card.completed {
+    background: var(--gray-700);
   }
   
-  .stat-text,
-  .todo-text,
-  .due-date,
-  .reminder-time {
-    color: #ccc;
+  .task-content h3 {
+    color: var(--gray-100);
   }
   
-  .due-date.overdue {
-    color: #ffcdd2;
+  .strikethrough {
+    color: var(--gray-400) !important;
+  }
+  
+  .meta-item {
+    color: var(--gray-300);
   }
 }
 </style>
