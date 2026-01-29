@@ -1,6 +1,6 @@
-# MyMoltbot - 微信小程序 Todo List 应用
+# MyMoltbot - Vue 3 Todo List 网页应用
 
-这是一个基于微信原生框架开发的待办事项（Todo List）小程序应用。
+这是一个基于 Vue 3 开发的待办事项（Todo List）网页应用。
 
 ## 功能特性
 
@@ -13,27 +13,21 @@
 
 ## 技术栈
 
-- 微信小程序原生框架 (WXML, WXSS, JavaScript)
-- 小程序云存储实现数据持久化
+- Vue 3 (Composition API)
+- Vite 构建工具
+- 本地存储实现数据持久化
 
 ## 文件结构
 
 ```
 ├── README.md
-├── project.config.json        # 项目配置
-├── app.js                     # 小程序逻辑
-├── app.json                   # 小程序公共配置
-├── app.wxss                   # 小程序公共样式
-├── sitemap.json               # 小程序页面索引规则
-├── pages/                     # 页面目录
-│   └── index/                 # 首页
-│       ├── index.js           # 页面逻辑
-│       ├── index.wxml         # 页面结构
-│       ├── index.wxss         # 页面样式
-│       └── index.json         # 页面配置
-├── utils/                     # 工具函数
-│   └── util.js                # 工具函数
-└── images/                    # 图片资源
+├── index.html
+├── package.json
+├── vite.config.js
+├── src/
+│   ├── main.js
+│   └── App.vue
+└── dist/                      # 构建输出目录
 ```
 
 ## 预览地址
@@ -42,10 +36,16 @@
 
 ## 快速开始
 
-1. 下载并安装微信开发者工具
-2. 克隆此项目
-3. 在微信开发者工具中导入项目
-4. 编译运行
+```bash
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+```
 
 ## 功能说明
 
