@@ -36,6 +36,10 @@
 └── images/                    # 图片资源
 ```
 
+## 预览地址
+
+[在线预览页面](https://wongyuye.github.io/MyMoltbot/)
+
 ## 快速开始
 
 1. 下载并安装微信开发者工具
