@@ -1,0 +1,16 @@
+项目：微信小程序 Todo List 应用
+├── README.md
+├── project.config.json
+├── app.js
+├── app.json
+├── app.wxss
+├── pages/
+│   ├── index/
+│   │   ├── index.js
+│   │   ├── index.wxml
+│   │   ├── index.wxss
+│   │   └── index.json
+├── utils/
+│   └── util.js
+└── images/
+    └── (存放图片资源)
