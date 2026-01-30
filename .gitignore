@@ -1,0 +1,201 @@
+# Dependencies
+node_modules/
+
+# Builds
+/dist
+/.vite
+/.svelte-kit
+/.nuxt
+
+# Environment variables
+.env*.local
+.env*.backup
+.env.local
+.env.backup
+.env
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage directory used by tools like istanbul
+coverage/
+.nyc_output/
+
+# Temporary folders
+.tmp
+.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Editor backup files
+*.bak
+*.tmp
+*.old
+
+# Build outputs for various frameworks
+.nuxt
+.next
+.dist
+.output
+
+# Lock files
+package-lock.json
+yarn.lock
+
+# Vite specific
+.vite/
+
+# npm specific
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+
+# Production builds
+dist/
+build/
+public/dist/
+
+# Cache directories
+.cache
+.node_cache
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Sensitive files
+config/
+secret/
+private/
+*.key
+*.pem
+*.crt
+*.cert
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging.local
+.env.backup
+.env.example.backup
+
+# IDE and editor specific files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/*
+*.tmproj
+nbproject/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+coverage/
+.nyc_output/
+.jest/
+jest/
+
+# CI/CD
+.semaphore/
+.circleci/
+
+# Database
+*.db
+*.db-journal
+
+# Process files
+*.pid
+
+# Logs
+logs/
+*.log
+
+# Runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Debug
+debug/
+*.swp
+*.swo
+*~
+
+# Local configuration
+local/
+config.local.js
+.env.local
+
+# Dependency directories
+node_modules/
+
+# Generated files
+generated/
+
+# Secrets
+secrets/
+*.secret
+
+# System temp files
+.fuse_hidden*
+.directory
+hfs.type*
+
+# Linux
+*~
+.project
+*.tmproj
+*.ptr
+.settings/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.com.apple.FinderInfo
+.apdisk
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
